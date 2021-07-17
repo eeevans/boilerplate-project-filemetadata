@@ -29,18 +29,26 @@ var storage = multer.diskStorage({
 var fs = require("fs"); // Load the filesystem module
 
 var upload = multer({ storage: storage })
-app.post('/api/fileanalyse', upload.single('upfile'), (req, res, next) => {
-  const file = req.file
-  if (!file) {
-    const error = new Error('Please upload a file')
-    error.httpStatusCode = 400
-    return next(error)
-  }
-  var stats = fs.statSync(__dirname + "/public/uploads/" + file.filename)
-  var fileSizeInBytes = stats.size;
-  res.json({ name: file.originalname, type: mime.lookup(file.originalname), size: fileSizeInBytes });
-  next();
-})
+// app.post('/api/fileanalyse', upload.single('upfile'), (req, res, next) => {
+//   const file = req.file
+//   if (!file) {
+//     const error = new Error('Please upload a file')
+//     error.httpStatusCode = 400
+//     return next(error)
+//   }
+//   var stats = fs.statSync(__dirname + "/public/uploads/" + file.filename)
+//   var fileSizeInBytes = stats.size;
+//   res.json({ name: file.originalname, type: mime.lookup(file.originalname), size: fileSizeInBytes });
+//   next();
+// })
+
+app.post("/api/fileanalyse", upload.single("upfile"), (req, res) => {
+  res.send({
+    name: req.file.originalname,
+    type: req.file.mimetype,
+    size: req.file.size,
+  });
+});
 
 
 const port = process.env.PORT || 3000;
